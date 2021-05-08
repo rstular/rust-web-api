@@ -5,10 +5,10 @@ extern crate r2d2_redis;
 use actix_web::{web, App, HttpServer};
 use const_format::concatcp;
 use r2d2_redis::{r2d2, RedisConnectionManager};
-use std::time::{Duration};
+use std::time::Duration;
 
-mod constants;
 mod anagram;
+mod constants;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
         .max_size(constants::CACHE_POOL_MAX_OPEN)
         .min_idle(Some(constants::CACHE_POOL_MIN_IDLE))
         .max_lifetime(Some(Duration::from_secs(
-            constants::CACHE_POOL_EXPIRE_SECONDS
+            constants::CACHE_POOL_EXPIRE_SECONDS,
         )))
         .build(anagram_manager)
         .expect("[Anagram] Could not build Redis connection pool");
@@ -25,12 +25,11 @@ async fn main() -> std::io::Result<()> {
     println!("[+] [Anagram] Built connection pool");
 
     return HttpServer::new(move || {
-        App::new()
-            .service(
-                web::scope("/anagram")
-                    .data(anagram_pool.clone())
-                    .service(anagram::handle_find_anagrams)
-            )
+        App::new().service(
+            web::scope("/anagram")
+                .data(anagram_pool.clone())
+                .service(anagram::handle_find_anagrams),
+        )
     })
     .bind(constants::SERVER_LISTEN)
     .expect(concatcp!("Could not bind to ", constants::SERVER_LISTEN))
