@@ -3,7 +3,6 @@ extern crate lazy_static;
 
 extern crate r2d2_redis;
 use actix_web::{web, App, HttpServer};
-use const_format::concatcp;
 use r2d2_redis::{r2d2, RedisConnectionManager};
 use std::time::Duration;
 
@@ -32,7 +31,7 @@ async fn main() -> std::io::Result<()> {
         )
     })
     .bind(constants::SERVER_LISTEN)
-    .expect(concatcp!("Could not bind to ", constants::SERVER_LISTEN))
+    .expect("[!] [Anagram] Could not bind to target port")
     .run()
     .await;
 }

@@ -1,5 +1,4 @@
 extern crate serde_json;
-use const_format::concatcp;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
@@ -20,9 +19,10 @@ lazy_static! {
     pub static ref ANAGRAM_MAPPING: HashMap<String, HashMap<String, u64>> = {
         println!("[+] [Anagram] Loading anagram configuration file");
         let file =
-            File::open(ANAGRAM_MAP_FILE).expect(concatcp!("Could not open ", ANAGRAM_MAP_FILE));
+            File::open(ANAGRAM_MAP_FILE).expect("[!] [Anagram] Could not open anagram map file");
         let reader = BufReader::new(file);
-        return serde_json::from_reader(reader).expect(concatcp!("Malformed ", ANAGRAM_MAP_FILE));
+
+        serde_json::from_reader(reader).expect("[!] [Anagram] Malformed anagram map file")
     };
 }
 pub const ANAGRAM_MAX_LENGTH: usize = 100;

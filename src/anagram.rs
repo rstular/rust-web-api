@@ -57,7 +57,7 @@ pub async fn handle_find_anagrams(
 }
 
 fn get_anagrams(
-    lang: &String,
+    lang: &str,
     hash: u64,
     db: &mut PooledConnection<RedisConnectionManager>,
 ) -> Result<Vec<String>, i32> {
@@ -68,7 +68,7 @@ fn get_anagrams(
     }
 }
 
-fn anagram_hash(letters: &String, lang: &String) -> Result<u64, String> {
+fn anagram_hash(letters: &str, lang: &str) -> Result<u64, String> {
     let letters_chars = letters.to_lowercase();
     let letters_chars = letters_chars.chars();
 
@@ -87,7 +87,7 @@ fn anagram_hash(letters: &String, lang: &String) -> Result<u64, String> {
 
         match anagram_map.get(&chr_string) {
             None => return Err("Invalid characters provided".to_owned()),
-            Some(prime) => hash_val = hash_val * prime,
+            Some(prime) => hash_val *= prime,
         };
     }
 
