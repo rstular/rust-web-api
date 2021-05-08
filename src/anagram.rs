@@ -22,8 +22,7 @@ struct AnagramError {
 #[get("/find/{lang}/{letters}")]
 pub async fn handle_find_anagrams(
     pool: web::Data<RedisPool>,
-    web::Path(lang): web::Path<String>,
-    web::Path(letters): web::Path<String>,
+    web::Path((lang, letters)): web::Path<(String, String)>,
 ) -> HttpResponse {
     let anagram_hash_opt = anagram_hash(&letters, &lang);
 
