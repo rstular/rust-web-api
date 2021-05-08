@@ -69,7 +69,9 @@ fn get_anagrams(
 }
 
 fn anagram_hash(letters: &String, lang: &String) -> Result<u64, String> {
-    let letters_chars = letters.chars();
+    let letters_chars = letters.to_lowercase();
+    let letters_chars = letters_chars.chars();
+
     if letters_chars.to_owned().count() > ANAGRAM_MAX_LENGTH {
         return Err("Too many letters supplied".to_owned());
     }
@@ -90,4 +92,61 @@ fn anagram_hash(letters: &String, lang: &String) -> Result<u64, String> {
     }
 
     Ok(hash_val)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hashcalc_valid() {
+        assert_eq!(
+            1,
+            anagram_hash(&String::from(""), &String::from("en")).unwrap()
+        );
+
+        assert_eq!(
+            43897927150,
+            anagram_hash(&String::from("democracy"), &String::from("en")).unwrap()
+        );
+        assert_eq!(
+            209300080460348,
+            anagram_hash(&String::from("IMAgination"), &String::from("en")).unwrap()
+        );
+
+        assert_eq!(
+            81744359,
+            anagram_hash(&String::from("kisik"), &String::from("sl")).unwrap()
+        );
+        assert_eq!(
+            14526017960740,
+            anagram_hash(&String::from("DEMokracija"), &String::from("sl")).unwrap()
+        );
+    }
+
+    #[test]
+    fn hashcalc_invalid_chars() {
+        assert_eq!(
+            "Invalid characters provided",
+            anagram_hash(&String::from("1234"), &String::from("en")).unwrap_err()
+        );
+
+        assert_eq!(
+            "Invalid characters provided",
+            anagram_hash(&String::from("te_st"), &String::from("en")).unwrap_err()
+        );
+
+        assert_eq!(
+            "Invalid characters provided",
+            anagram_hash(&String::from("te!()=st"), &String::from("en")).unwrap_err()
+        );
+    }
+
+    #[test]
+    fn hashcalc_invalid_lang() {
+        assert_eq!(
+            "Invalid language specified",
+            anagram_hash(&String::from("test"), &String::from("xx")).unwrap_err()
+        );
+    }
 }
